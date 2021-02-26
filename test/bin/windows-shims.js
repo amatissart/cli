@@ -9,7 +9,15 @@ const has = path => {
   try {
     // If WSL is installed, it *has* a bash.exe, but it fails if
     // there is no distro installed, so we need to detect that.
-    return spawnSync(path, ['-l', '-c', 'exit 0']).status === 0
+    const result = spawnSync(path, ['-l', '-c', 'exit 0'])
+    if (result.status === 0)
+      return true
+    else {
+      // print whatever error we got
+      throw result.error || Object.assign(new Error(String(result.stderr)), {
+        code: result.status,
+      })
+    }
   } catch (er) {
     t.comment(`not installed: ${path}`, er)
     return false
