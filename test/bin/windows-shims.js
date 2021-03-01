@@ -85,6 +85,11 @@ for (const [name, bash] of bashes) {
     continue
   }
 
+  if (bash === cygwinBash && process.env.NYC_CONFIG) {
+    t.skip('Cygwin does not play nicely with NYC, run without coverage')
+    continue
+  }
+
   t.test(name, async t => {
     t.plan(2)
     t.test('npm', async t => {
